@@ -2,9 +2,10 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "module": "nodenext",
-    "target": "esnext",
-    "lib": ["esnext"],
+    "module": "ES2020",           // ← MUDE AQUI
+    "moduleResolution": "bundler", // ← ADICIONE ESTA LINHA
+    "target": "ES2020",            // ← MUDE AQUI
+    "lib": ["ES2020"],
     "types": ["node"],
     "sourceMap": true,
     "declaration": true,
