@@ -1,19 +1,22 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { addFormToSheet, type FormData } from './services/googleSheets.js';
 
 dotenv.config();
 
 const app = express();
 
+// Para usar __dirname com ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (_, res) => {
-    return res.send('API Formulário Pesquisa - OK');
-});
-
+// Rotas da API
 app.get('/health', (_, res) => {
     return res.json({
         status: 'ok',
@@ -22,7 +25,6 @@ app.get('/health', (_, res) => {
     });
 });
 
-// Rota alternativa para o cron (se preferir)
 app.get('/ping', (_, res) => {
     return res.send('pong');
 });
@@ -31,14 +33,12 @@ app.post('/api/submit', async (req, res) => {
     try {
         const formData: FormData = req.body;
 
-        // Validação básica dos campos obrigatórios
         if (!formData.email) {
             return res.status(400).json({
                 error: 'Email é obrigatório'
             });
         }
 
-        // Adiciona na planilha
         await addFormToSheet(formData);
 
         return res.json({
@@ -52,6 +52,14 @@ app.post('/api/submit', async (req, res) => {
             error: 'Erro ao salvar dados. Tente novamente.'
         });
     }
+});
+
+// Servir arquivos estáticos do frontend (depois das rotas de API!)
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+
+// Qualquer rota não encontrada retorna o index.html (para React Router funcionar)
+app.get('*', (_, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
 
 export { app };
