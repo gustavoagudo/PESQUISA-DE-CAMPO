@@ -54,10 +54,10 @@ app.post('/api/submit', async (req, res) => {
     }
 });
 
-// Servir arquivos estáticos do frontend (depois das rotas de API!)
+// Servir arquivos estáticos do frontend
 app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
-// Qualquer rota não encontrada retorna o index.html (para React Router funcionar)
+// Fallback para React Router
 app.get('*', (_, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
