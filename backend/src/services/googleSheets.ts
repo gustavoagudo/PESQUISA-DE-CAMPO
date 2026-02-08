@@ -3,10 +3,18 @@ import { google } from 'googleapis';
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 
 export async function getGoogleSheetsClient() {
+  const client_email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const private_key = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+
+  // Validação das credenciais
+  if (!client_email || !private_key) {
+    throw new Error('Credenciais do Google Sheets não configuradas');
+  }
+
   const auth = new google.auth.GoogleAuth({
     credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      client_email,
+      private_key,
     },
     scopes: SCOPES,
   });
