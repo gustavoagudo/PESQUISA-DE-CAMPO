@@ -57,8 +57,8 @@ app.post('/api/submit', async (req, res) => {
 // Servir arquivos estáticos do frontend
 app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
-// Fallback para React Router - SINTAXE CORRETA PARA EXPRESS V5
-app.get('/:path(.*)', (_, res) => {
+// Fallback para React Router - usando regex puro para Express v5
+app.get(/^\/.*/, (_, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
 
